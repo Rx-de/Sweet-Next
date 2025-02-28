@@ -9,14 +9,6 @@ config KSU
 	  To compile as a module, choose M here: the
 	  module will be called kernelsu.
 
-config KSU_WITH_KPROBES
-	bool "Use kprobes for kernelsu"
-	depends on KSU
-	depends on KPROBES
-	default y
-	help
-	  Disable if you use manual hooks.
-
 config KSU_DEBUG
 	bool "KernelSU debug mode"
 	depends on KSU
@@ -55,7 +47,7 @@ config KSU_SUSFS_SUS_PATH
     help
       - Allow hiding the user-defined path and all its sub-paths from various system calls.
       - tmpfs filesystem is not allowed to be added. 
-      - Effective only on zygote spawned user app process.
+      - Effective on process with uid > 2000 only.
       - Use with cautious as it may cause performance loss and will be vulnerable to side channel attacks,
         just disable this feature if it doesn't work for you or you don't need it at all.
 
@@ -93,7 +85,7 @@ config KSU_SUSFS_SUS_KSTAT
     default y
     help
       - Allow spoofing the kstat of user-defined file/directory.
-      - Effective only on zygote spawned user app process.
+      - Effective on all processes.
 
 config KSU_SUSFS_SUS_OVERLAYFS
     bool "Enable to automatically spoof kstat and kstatfs for overlayed files/directories"

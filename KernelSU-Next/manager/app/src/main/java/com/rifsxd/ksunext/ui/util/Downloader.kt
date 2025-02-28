@@ -11,7 +11,6 @@ import android.os.Environment
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.core.content.ContextCompat
-import com.rifsxd.ksunext.ksuApp
 import com.rifsxd.ksunext.ui.util.module.LatestVersionInfo
 
 /**
@@ -64,11 +63,11 @@ fun download(
 
 fun checkNewVersion(): LatestVersionInfo {
     // Next version updates
-    val url = "https://api.github.com/repos/KernelSU-Next/KernelSU-Next/releases/latest"
+    val url = "https://api.github.com/repos/rifsxd/KernelSU-Next/releases/latest"
     // default null value if failed
     val defaultValue = LatestVersionInfo()
     runCatching {
-        ksuApp.okhttpClient.newCall(okhttp3.Request.Builder().url(url).build()).execute()
+        okhttp3.OkHttpClient().newCall(okhttp3.Request.Builder().url(url).build()).execute()
             .use { response ->
                 if (!response.isSuccessful) {
                     return defaultValue

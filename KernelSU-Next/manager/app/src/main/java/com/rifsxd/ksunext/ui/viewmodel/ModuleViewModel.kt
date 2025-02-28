@@ -10,10 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.Collator
-import java.util.Locale
-import com.rifsxd.ksunext.ksuApp
-import com.rifsxd.ksunext.ui.util.HanziToPinyin
 import com.rifsxd.ksunext.ui.util.listModules
 import com.rifsxd.ksunext.ui.util.overlayFsAvailable
 import org.json.JSONArray
@@ -55,8 +51,6 @@ class ModuleViewModel : ViewModel() {
     var isRefreshing by mutableStateOf(false)
         private set
 
-    var search by mutableStateOf("")
-
     var sortAToZ by mutableStateOf(false)
     var sortZToA by mutableStateOf(false)
 
@@ -65,13 +59,8 @@ class ModuleViewModel : ViewModel() {
             sortAToZ -> compareBy<ModuleInfo> { it.name.lowercase() }
             sortZToA -> compareByDescending<ModuleInfo> { it.name.lowercase() }
             else -> compareBy<ModuleInfo> { it.dirId }
-        }.thenBy(Collator.getInstance(Locale.getDefault()), ModuleInfo::id)
-
-        modules.filter {
-            it.id.contains(search, ignoreCase = true) ||
-            it.name.contains(search, ignoreCase = true) ||
-            HanziToPinyin.getInstance().toPinyinString(it.name).contains(search, ignoreCase = true)
-        }.sortedWith(comparator).also {
+        }
+        modules.sortedWith(comparator).also {
             isRefreshing = false
         }
     }
@@ -94,7 +83,7 @@ class ModuleViewModel : ViewModel() {
 
             kotlin.runCatching {
                 isOverlayAvailable = overlayFsAvailable()
-
+                
                 val result = listModules()
 
                 Log.i(TAG, "result: $result")
@@ -145,8 +134,11 @@ class ModuleViewModel : ViewModel() {
         val result = kotlin.runCatching {
             val url = m.updateJson
             Log.i(TAG, "checkUpdate url: $url")
-            val response = ksuApp.okhttpClient.newCall(
-                    okhttp3.Request.Builder().url(url).build()
+            val response = okhttp3.OkHttpClient()
+                .newCall(
+                    okhttp3.Request.Builder()
+                        .url(url)
+                        .build()
                 ).execute()
             Log.d(TAG, "checkUpdate code: ${response.code}")
             if (response.isSuccessful) {

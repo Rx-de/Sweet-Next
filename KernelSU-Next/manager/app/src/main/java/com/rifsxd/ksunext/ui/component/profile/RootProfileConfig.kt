@@ -73,7 +73,6 @@ fun RootProfileConfig(
             )
         }
 
-        /* 
         var expanded by remember { mutableStateOf(false) }
         val currentNamespace = when (profile.namespace) {
             Natives.Profile.Namespace.INHERITED.ordinal -> stringResource(R.string.profile_namespace_inherited)
@@ -127,7 +126,6 @@ fun RootProfileConfig(
                 }
             }
         })
-        */
 
         UidPanel(uid = profile.uid, label = "uid", onUidChange = {
             onProfileChange(

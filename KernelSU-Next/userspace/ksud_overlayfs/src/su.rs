@@ -14,7 +14,7 @@ use crate::{
 #[cfg(any(target_os = "linux", target_os = "android"))]
 use rustix::{
     process::getuid,
-    thread::{Gid, Uid, set_thread_res_gid, set_thread_res_uid},
+    thread::{set_thread_res_gid, set_thread_res_uid, Gid, Uid},
 };
 
 #[cfg(any(target_os = "linux", target_os = "android"))]
@@ -26,6 +26,7 @@ pub fn grant_root(global_mnt: bool) -> Result<()> {
         command.pre_exec(move || {
             if global_mnt {
                 let _ = utils::switch_mnt_ns(1);
+                let _ = utils::unshare_mnt_ns();
             }
             Result::Ok(())
         })
@@ -153,7 +154,7 @@ pub fn root_shell() -> Result<()> {
     }
 
     if matches.opt_present("v") {
-        println!("{}:KernelSU", defs::VERSION_NAME);
+        println!("{}:KernelSU Next", defs::VERSION_NAME);
         return Ok(());
     }
 
@@ -262,6 +263,7 @@ pub fn root_shell() -> Result<()> {
             #[cfg(any(target_os = "linux", target_os = "android"))]
             if mount_master {
                 let _ = utils::switch_mnt_ns(1);
+                let _ = utils::unshare_mnt_ns();
             }
 
             set_identity(uid, gid, &groups);
@@ -280,6 +282,6 @@ fn add_path_to_env(path: &str) -> Result<()> {
     let new_path = PathBuf::from(path.trim_end_matches('/'));
     paths.push(new_path);
     let new_path_env = env::join_paths(paths)?;
-    unsafe { env::set_var("PATH", new_path_env) };
+    env::set_var("PATH", new_path_env);
     Ok(())
 }
