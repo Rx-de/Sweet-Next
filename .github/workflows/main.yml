@@ -20,6 +20,9 @@ jobs:
           ca-certificates python3 \
           binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi \
           libghc-libyaml-dev libyaml-dev glibc-source \
+          bc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32zl-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-gtk3-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tool xsltproc zip zliblg-dev device-tree-compiler python-is-python3 cpio lld \
+
+
     - name: ready compile...
       run: |
           curl -s https://raw.githubusercontent.com/Rx-de/script/main/miui.sh > miui.sh
